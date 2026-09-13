@@ -29,9 +29,24 @@ RUN apk add --no-cache \
         /opt/cfx-server-data
 
 
-FROM scratch
+FROM debian:bookworm-slim
 
-COPY --from=builder / /
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        git \
+        libatomic1 \
+        libcurl4 \
+        libgcc-s1 \
+        libssl3 \
+        libstdc++6 \
+        xz-utils \
+        zlib1g \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /opt/cfx-server /opt/cfx-server
+COPY --from=builder /opt/cfx-server-data /opt/cfx-server-data
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
