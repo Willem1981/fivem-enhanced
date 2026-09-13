@@ -24,9 +24,7 @@ services:
     environment:
       SERVER_DATA_URL: ${SERVER_DATA_URL}
       SERVER_DATA_BRANCH: ${SERVER_DATA_BRANCH}
-
-    volumes:
-      - ./server-data:/opt/cfx-server-data
+      SV_LICENSE_KEY: ${SV_LICENSE_KEY}
 
     security_opt:
       - seccomp:unconfined

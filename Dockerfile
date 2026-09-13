@@ -32,6 +32,9 @@ RUN apk add --no-cache \
 FROM scratch
 
 COPY --from=builder / /
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /opt/cfx-server-data
 
@@ -39,18 +42,4 @@ EXPOSE 30120/tcp
 EXPOSE 30120/udp
 EXPOSE 40120/tcp
 
-ENTRYPOINT [
-    "/alpine/lib/ld-musl-x86_64.so.1",
-    "--library-path",
-    "/alpine/usr/lib/v8/:/alpine/lib/:/alpine/usr/lib/",
-    "--",
-    "/opt/cfx-server/cfx-server",
-    "+set",
-    "citizen_dir",
-    "/opt/cfx-server/citizen/"
-]
-
-CMD [
-    "+exec",
-    "server.cfg"
-]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
