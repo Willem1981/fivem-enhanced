@@ -4,6 +4,8 @@ services:
       context: .
       args:
         CFX_URL: ${CFX_URL}
+        SERVER_DATA_URL: ${SERVER_DATA_URL}
+        SERVER_DATA_BRANCH: ${SERVER_DATA_BRANCH}
 
     image: willem1981/fivem-enhanced:latest
 
@@ -20,8 +22,7 @@ services:
       - "40120:40120/tcp"
 
     volumes:
-      - ./server.cfg:/opt/cfx-server-data/server.cfg
-      - ./resources:/opt/cfx-server-data/resources
+      - ./server-data:/opt/cfx-server-data
 
     security_opt:
       - seccomp:unconfined
