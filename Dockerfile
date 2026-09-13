@@ -21,6 +21,7 @@ RUN apk add --no-cache \
         -o /tmp/cfx-server.tar.xz \
     && tar -xJf /tmp/cfx-server.tar.xz \
         -C /opt/cfx-server \
+    && test -x /opt/cfx-server/FXServer \
     && rm /tmp/cfx-server.tar.xz \
     && git clone \
         --depth 1 \

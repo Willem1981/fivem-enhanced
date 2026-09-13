@@ -60,6 +60,6 @@ echo ""
 
 cd "${SERVER_DATA}"
 
-exec /opt/cfx-server/cfx-server \
+exec /opt/cfx-server/FXServer \
     +set citizen_dir /opt/cfx-server/citizen/ \
     +exec server.cfg
