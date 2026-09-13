@@ -17,9 +17,9 @@ services:
     tty: true
 
     ports:
-      - "30120:30120/tcp"
-      - "30120:30120/udp"
-      - "40120:40120/tcp"
+      - "${HOST_FXSERVER_PORT:-30120}:30120/tcp"
+      - "${HOST_FXSERVER_PORT:-30120}:30120/udp"
+      - "${HOST_TXADMIN_PORT:-40120}:40120/tcp"
 
     environment:
       SERVER_DATA_URL: ${SERVER_DATA_URL}
