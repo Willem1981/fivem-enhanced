@@ -1,28 +1,37 @@
-FROM alpine:latest AS download
+FROM alpine:latest AS server
 
 ARG CFX_URL
 
 RUN test -n "$CFX_URL" || \
-    (echo "ERROR: CFX_URL build argument is required" && exit 1)
+    (echo "ERROR: CFX_URL is required" && exit 1)
 
 RUN apk add --no-cache \
         ca-certificates \
         curl \
+        git \
         xz \
-    && mkdir -p /srv/cfx \
+    && mkdir -p /opt/cfx-server \
     && curl -fSL --retry 5 --retry-delay 2 \
         "$CFX_URL" \
         -o /tmp/cfx-server.tar.xz \
     && tar -xJf /tmp/cfx-server.tar.xz \
-        -C /srv/cfx \
+        -C /opt/cfx-server \
     && rm /tmp/cfx-server.tar.xz
+
+
+FROM server AS data
+
+RUN git clone \
+        --depth 1 \
+        https://github.com/citizenfx/cfx-server-data.git \
+        /opt/cfx-server-data
 
 
 FROM scratch
 
-COPY --from=download /srv/cfx/ /
+COPY --from=data / /
 
-WORKDIR /opt/cfx-server
+WORKDIR /opt/cfx-server-data
 
 EXPOSE 30120/tcp
 EXPOSE 30120/udp
@@ -33,8 +42,13 @@ ENTRYPOINT [
     "--library-path",
     "/alpine/usr/lib/v8/:/alpine/lib/:/alpine/usr/lib/",
     "--",
-    "/alpine/opt/cfx-server/cfx-server",
+    "/opt/cfx-server/cfx-server",
     "+set",
     "citizen_dir",
-    "/alpine/opt/cfx-server/citizen/"
+    "/opt/cfx-server/citizen/"
+]
+
+CMD [
+    "+exec",
+    "server.cfg"
 ]
